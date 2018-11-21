@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { bindActionCreators } from 'redux'
-import { StyleSheet, Text, View, ScrollView, TouchableOpacity, TouchableHighlight, FlatList, Button } from 'react-native'
+import { NativeModules, LayoutAnimation, StyleSheet, Text, View, ScrollView, TouchableOpacity, TouchableHighlight, FlatList, Button } from 'react-native'
 import { connect } from 'react-redux'
 import { reset } from 'redux-form'
 import { Icon } from 'react-native-elements'
@@ -13,6 +13,11 @@ import { name as SearchFormName } from '../containers/SearchForm'
 
 import AppLoading from '../components/AppLoading'
 import NoHouses from '../components/NoHouses'
+
+const { UIManager } = NativeModules;
+
+UIManager.setLayoutAnimationEnabledExperimental &&
+  UIManager.setLayoutAnimationEnabledExperimental(true);
 
 
 function NoHousesReload({ onPress }) {
@@ -36,7 +41,8 @@ class HousingList extends Component {
     }
     componentDidMount() {
         this.props.navigation.setParams({ pageTitle: this.props.city })
-        this.props.fetchHousings()
+        if (this.props.housings.status === actions.housings.HOUSING_STATUS_LOADING)
+            this.props.fetchHousings()
     }
 
     componentDidUpdate(prevProps) {

@@ -1,5 +1,6 @@
 import { formValueSelector, reset } from 'redux-form'
 
+export const HOUSING_LIST_NEW = 'HOUSING_LIST_NEW'
 export const HOUSING_LIST_COMPLETE = 'HOUSING_LIST_COMPLETE'
 export const HOUSING_DETAILS_COMPLETE = 'HOUSING_DETAILS_COMPLETE'
 export const HOUSING_STATUS_UPDATE = 'HOUSING_STATUS_UPDATE'

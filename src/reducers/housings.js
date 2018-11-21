@@ -4,7 +4,7 @@ import actions from '../actions'
 const defaultState = {
     list: [],
     details: null,
-    status: actions.housings.HOUSING_STATUT_LOADING,
+    status: actions.housings.HOUSING_LIST_NEW,
     city: null
 }
 
