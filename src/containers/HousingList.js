@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { bindActionCreators } from 'redux'
-import { NativeModules, LayoutAnimation, StyleSheet, Text, View, ScrollView, TouchableOpacity, TouchableHighlight, FlatList, Button } from 'react-native'
+import { StyleSheet, Text, View, ScrollView, TouchableOpacity, TouchableHighlight, FlatList, Button } from 'react-native'
 import { connect } from 'react-redux'
 import { reset } from 'redux-form'
 import { Icon } from 'react-native-elements'
@@ -13,11 +13,7 @@ import { name as SearchFormName } from '../containers/SearchForm'
 
 import AppLoading from '../components/AppLoading'
 import NoHouses from '../components/NoHouses'
-
-const { UIManager } = NativeModules;
-
-UIManager.setLayoutAnimationEnabledExperimental &&
-  UIManager.setLayoutAnimationEnabledExperimental(true);
+import NoConnection from '../components/NoConnection'
 
 
 function NoHousesReload({ onPress }) {
@@ -25,6 +21,7 @@ function NoHousesReload({ onPress }) {
         <Button title='Effacer la recherche' onPress={onPress} color={'brown'}/>
     </NoHouses>
 }
+
 
 class HousingList extends Component {
     static navigationOptions = ({ navigation }) => {
@@ -41,11 +38,14 @@ class HousingList extends Component {
     }
     componentDidMount() {
         this.props.navigation.setParams({ pageTitle: this.props.city })
-        if (this.props.housings.status === actions.housings.HOUSING_STATUS_LOADING)
+
+        if (this.props.housings.status === actions.housings.HOUSING_LIST_NEW)
             this.props.fetchHousings()
     }
 
     componentDidUpdate(prevProps) {
+        if (this.props.housings.status === actions.housings.HOUSING_STATUS_NO_CONNECTION && this.props.isConnected)
+            this.props.fetchHousings()
         if (prevProps.city !== this.props.city)
             this.props.navigation.setParams({ pageTitle: this.props.city })
     }
@@ -64,7 +64,9 @@ class HousingList extends Component {
         this.props.cleanSearch()
     }
     render() {
-        const { housings } = this.props
+        const { housings, isConnect } = this.props
+        if (housings.status === actions.housings.HOUSING_STATUS_NO_CONNECTION)
+            return <NoConnection />
         if (housings.status === actions.housings.HOUSING_STATUS_LOADING)
             return <AppLoading />
         if (housings.status === actions.housings.HOUSING_STATUS_NO_HOUSES)
@@ -92,6 +94,6 @@ const styles = StyleSheet.create({
 })
 
 export default connect(
-    state => { return { housings: state.housings, city: state.housings.city }},
+    state => { return { housings: state.housings, city: state.housings.city, isConnected: state.connectivity.status === actions.connectivity.CONNECTIVITY_STATUS_CONNECTED }},
     dispatch => bindActionCreators({ fetchHousings: actions.housings.fetchHousings, cleanSearch: actions.housings.cleanSearch }, dispatch)
 )(HousingList)

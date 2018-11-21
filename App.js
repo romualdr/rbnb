@@ -12,14 +12,16 @@ import { Provider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
 
 import configureStore from './src/store'
-import AppLoading from './src/components/AppLoading'
+import ConnectivityManager from './src/containers/ConnectivityManager'
 import Navigator from './src/containers/Navigator'
+import AppLoading from './src/components/AppLoading'
 
 const { store, persistor } = configureStore()
 
 const App = () =>
     <Provider store={store} >
         <PersistGate loading={<AppLoading />} persistor={persistor}>
+            <ConnectivityManager/>
             <Navigator/>
         </PersistGate>
     </Provider>

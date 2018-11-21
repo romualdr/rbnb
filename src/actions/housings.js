@@ -8,6 +8,7 @@ export const HOUSING_STATUS_UPDATE = 'HOUSING_STATUS_UPDATE'
 export const HOUSING_STATUS_LOADING = 'IS_LOADING'
 export const HOUSING_STATUS_LOADED = 'LOADED'
 export const HOUSING_STATUS_NO_HOUSES = 'NO_HOUSES'
+export const HOUSING_STATUS_NO_CONNECTION = 'NO_CONNECTION'
 
 export function startLoading() {
     return function (dispatch, getState) {
@@ -43,7 +44,10 @@ export function fetchHousings() {
                 city: city,
                 housings
             });
-        })
+        }).catch(() => dispatch({
+            type: HOUSING_STATUS_UPDATE,
+            status: HOUSING_STATUS_NO_CONNECTION
+        }))
     }
 }
 
